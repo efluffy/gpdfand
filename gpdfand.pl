@@ -59,6 +59,8 @@ sub getTemps {
 sub fanCtlOn {
         open(my $fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "397";
+	close($fhexp);
+	open(my $fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "398";
         close($fhexp);
 }
