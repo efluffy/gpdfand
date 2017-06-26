@@ -5,7 +5,7 @@ use warnings;
 
 use constant LOG_DIR    => '/var/log/gpdfand';
 use constant LOG_FILE   => 'gpdfand.log';
-use constant PIDDIR     => '/var/run/gpdfand';
+use constant PIDDIR     => '/var/run';
 use constant TEMPS      => 40;
 use constant TEMPM      => 50;
 use constant TEMPH      => 60;
@@ -60,7 +60,7 @@ sub fanCtlOn {
         open(my $fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "397";
 	close($fhexp);
-	open(my $fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
+	open($fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "398";
         close($fhexp);
 }

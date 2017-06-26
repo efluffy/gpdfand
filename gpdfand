@@ -2,11 +2,15 @@
 
 case $1 in
   pre)
+    # stop fan control script
+    systemctl stop gpdfand.service
+
     # disable fans
-    kill -SIGUSR1 $(cat /var/run/gpdfand.pid)
+    echo 0 > /sys/class/gpio/gpio397/value
+    echo 0 > /sys/class/gpio/gpio398/value
     ;;
   post)
     # start fan control script
-    kill -SIGUSR2 $(cat /var/run/gpdfand.pid)
+    systemctl start gpdfand.service
     ;;
 esac
