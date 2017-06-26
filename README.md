@@ -1,17 +1,17 @@
-fan control daemon for gpd pocket
+fan control daemon for gpd pocket<br>
 
-files go:
-gpdfand.service => /etc/systemd/system/gpdfand.service
-gpdfand => /lib/systemd/system-sleep/gpdfand
-gpdfand.pl => /usr/local/bin/gpdfand
+files go: <br>
+gpdfand.service => /etc/systemd/system/gpdfand.service <br>
+gpdfand => /lib/systemd/system-sleep/gpdfand <br>
+gpdfand.pl => /usr/local/bin/gpdfand <br>
 
-to make work:
-chmod +x /lib/systemd/system-sleep/gpdfand /usr/local/bin/gpdfand
+to make work:<br>
+chmod +x /lib/systemd/system-sleep/gpdfand /usr/local/bin/gpdfand<br>
 
-apt-get -y install libproc-daemon-perl libproc-pid-file-perl liblog-dispatch-perl
+apt-get -y install libproc-daemon-perl libproc-pid-file-perl liblog-dispatch-perl<br>
 
-systemctl daemon-reload
-systemctl enable gpdfand.service
-systemctl start gpdfand.service
+systemctl daemon-reload<br>
+systemctl enable gpdfand.service<br>
+systemctl start gpdfand.service<br>
 
-no warranty blah blah do whatever with it
+no warranty blah blah do whatever with it<br>
