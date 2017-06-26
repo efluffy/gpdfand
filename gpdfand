@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case $1 in
+  pre)
+    # disable fans
+    kill -SIGUSR1 $(cat /var/run/gpdfand.pid)
+    ;;
+  post)
+    # start fan control script
+    kill -SIGUSR2 $(cat /var/run/gpdfand.pid)
+    ;;
+esac
