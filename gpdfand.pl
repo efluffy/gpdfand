@@ -40,27 +40,29 @@ sub dienice ($);
 
 sub getTemps {
         my @tmp;
+        my @tmp_paths;
         my $corefh;
-        open($corefh, "<", "/sys/class/hwmon/hwmon4/temp2_input");
-        $tmp[0] = <$corefh> / 1000;
-        close($corefh);
-        open($corefh, "<", "/sys/class/hwmon/hwmon4/temp3_input");
-        $tmp[1] = <$corefh> / 1000;
-        close($corefh);
-        open($corefh, "<", "/sys/class/hwmon/hwmon4/temp4_input");
-        $tmp[2] = <$corefh> / 1000;
-        close($corefh);
-        open($corefh, "<", "/sys/class/hwmon/hwmon4/temp5_input");
-        $tmp[3] = <$corefh> / 1000;
-        close($corefh);
+        my $tmp_int = 0;
+        
+        # Determine path
+        @tmp_paths = glob "/sys/class/hwmon/hwmon*/temp{2,3,4,5}_input";
+        
+        foreach(@tmp_paths)
+        {
+          open($corefh, "<", $_);
+          $tmp[$tmp_int] = <$corefh> / 1000;
+          close($corefh);
+          
+          $tmp_int++;
+        }
         return @tmp;
 }
 
 sub fanCtlOn {
         open(my $fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "397";
-	close($fhexp);
-	open($fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
+	      close($fhexp);
+	      open($fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "398";
         close($fhexp);
 }
