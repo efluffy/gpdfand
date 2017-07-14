@@ -27,9 +27,9 @@ apt-get -y install libproc-daemon-perl libproc-pid-file-perl liblog-dispatch-per
 
 **Install Service:**
 ```
-systemctl daemon-reload<br>
-systemctl enable gpdfand.service<br>
-systemctl start gpdfand.service<br>
+systemctl daemon-reload
+systemctl enable gpdfand.service
+systemctl start gpdfand.service
 ```
 
 No warranty blah blah do whatever with it...
