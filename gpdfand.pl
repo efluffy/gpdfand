@@ -6,9 +6,9 @@ use warnings;
 use constant LOG_DIR    => '/var/log/gpdfand';
 use constant LOG_FILE   => 'gpdfand.log';
 use constant PIDDIR     => '/var/run';
-use constant TEMPS      => 40;
-use constant TEMPM      => 50;
-use constant TEMPH      => 60;
+use constant TEMPS      => 45;
+use constant TEMPM      => 55;
+use constant TEMPH      => 65;
 
 use Proc::Daemon;
 use Proc::PID::File;
