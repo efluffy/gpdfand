@@ -43,16 +43,16 @@ sub getTemps {
         my @tmp_paths;
         my $corefh;
         my $tmp_int = 0;
-        
+
         # Determine path
         @tmp_paths = glob "/sys/class/hwmon/hwmon*/temp{2,3,4,5}_input";
-        
+
         foreach(@tmp_paths)
         {
           open($corefh, "<", $_);
           $tmp[$tmp_int] = <$corefh> / 1000;
           close($corefh);
-          
+
           $tmp_int++;
         }
         return @tmp;
@@ -95,8 +95,8 @@ my $sleep = 0;
 $SIG{HUP}  = sub { $log->warning("Caught SIGHUP:  exiting gracefully"); $keep_going = 0; };
 $SIG{INT}  = sub { $log->warning("Caught SIGINT:  exiting gracefully"); $keep_going = 0; };
 $SIG{QUIT} = sub { $log->warning("Caught SIGQUIT:  exiting gracefully"); $keep_going = 0; };
-$SIG{SIGUSR1} = sub { 
-    $log->warning("Caught SIGUSR1: stopping fans for suspend."); 
+$SIG{SIGUSR1} = sub {
+    $log->warning("Caught SIGUSR1: stopping fans for suspend.");
     $sleep = 1;
     fanSpd(0,0);
 };
@@ -109,19 +109,26 @@ $SIG{SIGUSR2} = sub {
 while ($keep_going) {
         if($sleep) { sleep 10; next; }
         my @temps = getTemps();
+        my $average = 0;
+        my $counter = 0;
 
-        if( $temps[0] < TEMPS && $temps[1] < TEMPS && $temps[2] < TEMPS && $temps[3] < TEMPS ) {
-                fanSpd(1,0);
+        foreach (@temps) {
+            $average += $temps[$counter];
+            $counter++;
         }
-        elsif ( $temps[0] < TEMPM && $temps[1] < TEMPM && $temps[2] < TEMPM && $temps[3] < TEMPM ) {
-                fanSpd(0,1);
-        }
-        elsif ( $temps[0] < TEMPH && $temps[1] < TEMPH && $temps[2] < TEMPH && $temps[3] < TEMPH ) {
-                fanSpd(1,1);
-        }
-        else {
-                # Default to fast in case something is a broken.
-                fanSpd(1,1);
+        $average = $average/$counter;
+
+        if( $average < TEMPS ) {
+            fanSpd(0,0);
+        } elsif ( $average > TEMPS && $average < TEMPM ){
+            fanSpd(1,0);
+        } elsif ( $average > TEMPM && $average < TEMPH ){
+            fanSpd(0,1);
+        } elsif ( $average > TEMPH ){
+            fanSpd(1,1);
+        } else {
+            # Default to fast in case something is a broken.
+            fanSpd(1,1);
         }
         sleep 1.0;
 }
