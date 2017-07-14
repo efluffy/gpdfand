@@ -1,11 +1,12 @@
 # Fan control daemon for GPD Pocket
 
-### Installations
-#### Using a primitive shell installation script
+## Installation:
+### Using a primitive shell installation script
+```
+$ sudo sh install.sh
+```
 
-`$ sudo sh install.sh`
-
-#### ...or do it manually like a B055!
+### ...or do it manually like a B055!
 
 **Files go to:**
 ```
@@ -15,10 +16,14 @@ gpdfand.pl => /usr/local/bin/gpdfand
 ```
 
 **Change executables permissions:**
-`chmod +x /lib/systemd/system-sleep/gpdfand /usr/local/bin/gpdfand`
+```
+chmod +x /lib/systemd/system-sleep/gpdfand /usr/local/bin/gpdfand
+```
 
 **Install dependencies:**
-`apt-get -y install libproc-daemon-perl libproc-pid-file-perl liblog-dispatch-perl`
+```
+apt-get -y install libproc-daemon-perl libproc-pid-file-perl liblog-dispatch-perl
+```
 
 **Install Service:**
 ```
