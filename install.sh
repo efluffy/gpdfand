@@ -14,6 +14,9 @@ cp gpdfand.pl /usr/local/bin/gpdfand
 echo "Chmod'ing executables..."
 chmod +x /lib/systemd/system-sleep/gpdfand /usr/local/bin/gpdfand
 
+echo "Adding /var/log dir..."
+mkdir -p /var/log/gpdfand
+
 echo "Getting neccessary dependencies..."
 apt-get -qq -y install libproc-daemon-perl libproc-pid-file-perl liblog-dispatch-perl
 
