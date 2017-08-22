@@ -111,12 +111,18 @@ while ($keep_going) {
         my @temps = getTemps();
         my $average = 0;
         my $counter = 0;
+	
+	#dirty, swapping to max single core temp instead of average for testing, will fix later	
 
-        foreach (@temps) {
-            $average += $temps[$counter];
-            $counter++;
-        }
-        $average = $average/$counter;
+	my $highest = (sort { $b <=> $a } @temps)[0];
+
+        #foreach (@temps) {
+        #    $average += $temps[$counter];
+        #    $counter++;
+        #}
+        #$average = $average/$counter;
+	
+	$average = $highest;
 
         if( $average < TEMPS ) {
             fanSpd(0,0);
