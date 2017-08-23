@@ -6,6 +6,7 @@ use warnings;
 use constant LOG_DIR    => '/var/log/gpdfand';
 use constant LOG_FILE   => 'gpdfand.log';
 use constant PIDDIR     => '/var/run';
+use constant VERSION    => '1.0.1';
 use constant TEMPS      => 45;
 use constant TEMPM      => 55;
 use constant TEMPH      => 65;
@@ -16,6 +17,7 @@ use Log::Dispatch;
 use Log::Dispatch::File;
 use Date::Format;
 use File::Spec;
+use List::Util qw( max );
 
 our $HOSTNAME = `hostname`;
 chomp $HOSTNAME;
@@ -42,18 +44,15 @@ sub getTemps {
         my @tmp;
         my @tmp_paths;
         my $corefh;
-        my $tmp_int = 0;
 
         # Determine path
         @tmp_paths = glob "/sys/class/hwmon/hwmon*/temp{2,3,4,5}_input";
 
         foreach(@tmp_paths)
         {
-          open($corefh, "<", $_);
-          $tmp[$tmp_int] = <$corefh> / 1000;
-          close($corefh);
-
-          $tmp_int++;
+            open($corefh, "<", $_);
+            push @tmp, <$corefh> / 1000;
+            close($corefh);
         }
         return @tmp;
 }
@@ -61,8 +60,8 @@ sub getTemps {
 sub fanCtlOn {
         open(my $fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "397";
-          close($fhexp);
-          open($fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
+        close($fhexp);
+        open($fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "398";
         close($fhexp);
 }
@@ -82,7 +81,7 @@ our $PIDFILE = PIDDIR."/$ME.pid";
 
 fanCtlOn();
 
-$log->warning("Starting gpdfand:  ".time());
+$log->warning("Starting gpdfand @{[VERSION]}:  ".time());
 
 Proc::Daemon::Init();
 
@@ -109,27 +108,16 @@ $SIG{SIGUSR2} = sub {
 while ($keep_going) {
         if($sleep) { sleep 10; next; }
         my @temps = getTemps();
-        my $average = 0;
+        my $temp = max @temps;
         my $counter = 0;
 
-        #dirty, swapping to max single core temp instead of average for testing, will fix later    
-
-        my $highest = (sort { $b <=> $a } @temps)[0];
-
-        #foreach (@temps) {
-        #    $average += $temps[$counter];
-        #    $counter++;
-        #}
-        #$average = $average/$counter;
-    
-        $average = $highest;
-        if( $average < TEMPS ) {
+        if( $temp < TEMPS ) {
             fanSpd(0,0);
-        } elsif ( $average > TEMPS && $average < TEMPM ){
+        } elsif ( $temp > TEMPS && $temp < TEMPM ){
             fanSpd(1,0);
-        } elsif ( $average > TEMPM && $average < TEMPH ){
+        } elsif ( $temp > TEMPM && $temp < TEMPH ){
             fanSpd(0,1);
-        } elsif ( $average > TEMPH ){
+        } elsif ( $temp > TEMPH ){
             fanSpd(1,1);
         } else {
             # Default to fast in case something is a broken.
@@ -138,7 +126,7 @@ while ($keep_going) {
         sleep 1.0;
 }
 
-$log->warning("Stopping gpdfand:  ".time());
+$log->warning("Stopping gpdfand @{[VERSION]}:  ".time());
 
 sub dienice ($) {
         my ($package, $filename, $line) = caller;
