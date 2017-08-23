@@ -61,8 +61,8 @@ sub getTemps {
 sub fanCtlOn {
         open(my $fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "397";
-	      close($fhexp);
-	      open($fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
+          close($fhexp);
+          open($fhexp, ">", "/sys/class/gpio/export") or dienice("GPIO error.");
         print $fhexp "398";
         close($fhexp);
 }
@@ -111,19 +111,18 @@ while ($keep_going) {
         my @temps = getTemps();
         my $average = 0;
         my $counter = 0;
-	
-	#dirty, swapping to max single core temp instead of average for testing, will fix later	
 
-	my $highest = (sort { $b <=> $a } @temps)[0];
+        #dirty, swapping to max single core temp instead of average for testing, will fix later    
+
+        my $highest = (sort { $b <=> $a } @temps)[0];
 
         #foreach (@temps) {
         #    $average += $temps[$counter];
         #    $counter++;
         #}
         #$average = $average/$counter;
-	
-	$average = $highest;
-
+    
+        $average = $highest;
         if( $average < TEMPS ) {
             fanSpd(0,0);
         } elsif ( $average > TEMPS && $average < TEMPM ){
