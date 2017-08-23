@@ -6,7 +6,7 @@ use warnings;
 use constant LOG_DIR    => '/var/log/gpdfand';
 use constant LOG_FILE   => 'gpdfand.log';
 use constant PIDDIR     => '/var/run';
-use constant VERSION    => '1.0.1';
+use constant VERSION    => '1.1.0';
 use constant TEMPS      => 45;
 use constant TEMPM      => 55;
 use constant TEMPH      => 65;
@@ -111,18 +111,19 @@ while ($keep_going) {
         my $temp = max @temps;
         my $counter = 0;
 
-        if( $temp < TEMPS ) {
-            fanSpd(0,0);
-        } elsif ( $temp > TEMPS && $temp < TEMPM ){
-            fanSpd(1,0);
-        } elsif ( $temp > TEMPM && $temp < TEMPH ){
-            fanSpd(0,1);
-        } elsif ( $temp > TEMPH ){
+        if( $temp > TEMPH ) {
             fanSpd(1,1);
+        } elsif ( $temp > TEMPM ){
+            fanSpd(0,1);
+        } elsif ( $temp > TEMPS ){
+            fanSpd(1,0);
+        } elsif ( $temp > 0 ){
+            fanSpd(0,0);
         } else {
-            # Default to fast in case something is a broken.
+            # Default to fast in case something is broken.
             fanSpd(1,1);
         }
+
         sleep 1.0;
 }
 
